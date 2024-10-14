@@ -2,7 +2,7 @@
   "name": "social_media",
   "version": "1.0.0",
   "description": "A full-stack Instagram-like social media platform built with Node.js and EJS.",
-  "main": "index.js",
+  "main": "./src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

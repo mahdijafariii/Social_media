@@ -38,37 +38,37 @@ a {
 /* Application Fonts */
 @font-face {
     font-family: 'Poppins-Light';
-    src: url(../fonts/Poppins/Poppins-Light.ttf);
+    src: url(/fonts/Poppins/Poppins-Light.ttf);
 }
 
 @font-face {
     font-family: 'Poppins-Regular';
-    src: url(../fonts/Poppins/Poppins-Regular.ttf);
+    src: url(/fonts/Poppins/Poppins-Regular.ttf);
 }
 
 @font-face {
     font-family: 'Poppins-Medium';
-    src: url(../fonts/Poppins/Poppins-Medium.ttf);
+    src: url(/fonts/Poppins/Poppins-Medium.ttf);
 }
 
 @font-face {
     font-family: 'Poppins-SemiBold';
-    src: url(../fonts/Poppins/Poppins-SemiBold.ttf);
+    src: url(/fonts/Poppins/Poppins-SemiBold.ttf);
 }
 
 @font-face {
     font-family: 'Poppins-Bold';
-    src: url(../fonts/Poppins/Poppins-Bold.ttf);
+    src: url(/fonts/Poppins/Poppins-Bold.ttf);
 }
 
 @font-face {
     font-family: 'Poppins-ExtraBold';
-    src: url(../fonts/Poppins/Poppins-ExtraBold.ttf);
+    src: url(/fonts/Poppins/Poppins-ExtraBold.ttf);
 }
 
 @font-face {
     font-family: 'Poppins-Black';
-    src: url(../fonts/Poppins/Poppins-Black.ttf);
+    src: url(/fonts/Poppins/Poppins-Black.ttf);
 }
 
 /* Container */
