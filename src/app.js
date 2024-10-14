@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require("path");
 const app = express();
-
+const cors = require('cors');
 app.use(express.urlencoded({extended : true , limit : "50mb"}));
 app.use(express.json({limit : "50mb"}));
 
@@ -11,6 +11,16 @@ app.use('/css',express.static(path.join(__dirname,'public/css')));
 app.use('/fonts',express.static(path.join(__dirname,'public/fonts')))
 app.use('/js',express.static(path.join(__dirname,'public/js')));
 app.use('/images',express.static(path.join(__dirname,'public/images')))
+
+const corsOptions = {
+    origin: '*',
+    methods: 'GET, POST, PUT, DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+};
+app.use(cors(corsOptions))
+
+
 
 // ejs
 app.set("view engine", "ejs");
@@ -23,6 +33,7 @@ app.get("/",(req ,res)=>{
 
 app.use((req,res)=>{
     console.log("this path is not found :" , req.path);
+    return res.status(500).json({message : "404! Path Not Found"})
 })
 
 module.exports = app;
