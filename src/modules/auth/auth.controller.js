@@ -25,10 +25,15 @@ const register = async (req,res)=>{
 
     return successResponses(res,201,{
         message : "User added successfully !!",
-        user : user
+        user : {...(user), password : undefined}
     })
 
 
 };
+
+const showRegisterView = async (req,res)=>{
+    return res.render('auth/register');
+}
+
 
 module.exports = {register};
