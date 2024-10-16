@@ -137,17 +137,21 @@
                     >Split the hashtags with comma ( , )</span
                     >
                 </div>
-                <div class="alert error">
-                    <span> You need to verify your account </span>
-                    <div>
-                        <button
-                                id="send-verification-request"
-                                class="send-verification"
-                        >
-                            Send verification
-                        </button>
+
+                <% if (locals.messages.verifyMessage) { %>
+                    <div class="alert error">
+                        <span> You need to verify your account </span>
+                        <div>
+                            <button
+                                    id="send-verification-request"
+                                    class="send-verification"
+                            >
+                                Send verification
+                            </button>
+                        </div>
                     </div>
-                </div>
+                <% } %>
+
                 <!-- Upload Button -->
                 <div class="mt-4 flex items-center justify-end">
                     <button id="upload-button" class="max-w-max">Upload post</button>

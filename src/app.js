@@ -2,6 +2,8 @@ const express = require('express');
 const path = require("path");
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 
 const authRoutes = require("../../Social_media/src/modules/auth/auth.router")
