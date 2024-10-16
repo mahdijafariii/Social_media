@@ -59,7 +59,7 @@
 
 <!-- Main -->
 <main id="post-upload-wrapper">
-    <form method="post" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data">
         <section id="post-upload-container">
             <!-- File Upload -->
             <div class="post-upload-box">
@@ -156,7 +156,9 @@
 
                 <!-- Upload Button -->
                 <div class="mt-4 flex items-center justify-end">
-                    <button type="submit" id="upload-button" class="max-w-max">Upload post</button>
+                    <button type="submit" id="upload-button" class="max-w-max">
+                        Upload post
+                    </button>
                 </div>
             </div>
         </section>
@@ -169,20 +171,19 @@
 <!-- Footer -->
 
 <!-- Scripts -->
-<script src="/src/Functions/index.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     if ("<%= locals.messages.error %>") {
         swal({
             title: "<%= locals.messages.error %>",
             icon: "error",
-            buttons: "Try Again"
+            buttons: "Try Again",
         });
     } else if ("<%= locals.messages.success %>") {
         swal({
             title: "<%= locals.messages.success %>",
             icon: "success",
-            buttons: "Huraaa 😍"
+            buttons: "Huraaa 😍",
         });
     }
 </script>
