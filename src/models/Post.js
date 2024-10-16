@@ -6,16 +6,16 @@ const schema = new mongoose.Schema({
             type : String ,
             required : true
         },
-        filename : {
-            type : String,
-            required: true,
-        },
         description : {
             type : String,
+            required : true,
         },
         user : {
             ref : 'User',
             required : true,
+        },
+        hashtags : {
+            type : [String],
         }
     }
 })

@@ -2,7 +2,11 @@ const express = require('express');
 const path = require("path");
 const app = express();
 const cors = require('cors');
+
+
 const authRoutes = require("../../Social_media/src/modules/auth/auth.router")
+const postRoutes = require('../../Social_media/src/modules/post/post.router');
+
 const flash = require('express-flash');
 const session = require('express-session');
 app.use(express.urlencoded({extended : true , limit : "50mb"}));
@@ -37,8 +41,10 @@ app.set("views", path.join(__dirname , "views"))
 app.get("/",(req ,res)=>{
     return res.render("index")
 })
-app.use("/auth", authRoutes);
 
+
+app.use("/auth", authRoutes);
+app.use('/post',postRoutes);
 
 app.use((req,res)=>{
     console.log("this path is not found :" , req.path);
