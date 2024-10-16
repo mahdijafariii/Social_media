@@ -4,7 +4,7 @@ const path = require('path');
 
 exports.multerStorage = (destination , allowedTypes = /jpeg|jpg|png|webp/)=>{
     if(!fs.existsSync(destination)){
-        fs.mkdirSync(destination);
+        fs.mkdirSync(destination,{recursive : true});
     }
     
     const storage = multer.diskStorage({
@@ -19,7 +19,7 @@ exports.multerStorage = (destination , allowedTypes = /jpeg|jpg|png|webp/)=>{
     })
 
     const fileFilter = function (req,file,cb){
-        if(allowedTypes.test(file.mimeTypes)){
+        if(allowedTypes.test(file.mimeType)){
             cb(null,true);
         }
         else {

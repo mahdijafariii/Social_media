@@ -6,18 +6,25 @@ const schema = new mongoose.Schema({
             type : String ,
             required : true
         },
-        description : {
+        filename : {
             type : String,
-            required : true,
+            required : true
         },
-        user : {
-            ref : 'User',
-            required : true,
-        },
-        hashtags : {
-            type : [String],
-        }
+    },
+    description : {
+        type : String,
+        required : true,
+    },
+    user : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required : true,
+    },
+    hashtags : {
+        type : [String],
     }
+
 })
 
-const model = mongoose.model('Post',schema)
+const model = mongoose.model('Post',schema);
+module.exports = model;
