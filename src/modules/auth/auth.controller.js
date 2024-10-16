@@ -68,7 +68,6 @@ const login = async (req,res,next)=>{
         }
         const isPasswordMatch = await bcrypt.compare(password,user.password);
         if(!isPasswordMatch){
-            console.log("sadkasldj")
             req.flash('error' ,"Invalid username or password!!" )
             return res.redirect('/auth/login')
         }
