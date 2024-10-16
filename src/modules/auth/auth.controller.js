@@ -2,6 +2,7 @@ const userModel = require('../../models/User');
 const {errorResponses, successResponses} = require("../../utils/responses");
 const {registerValidationSchema} = require("./auth.validator");
 const jwt = require('jsonwebtoken');
+const refreshTokenModel = require('../../models/RefreshToken')
 const {maxAge} = require("express-session/session/cookie");
 const register = async (req,res)=>{
     const {password , name , email , username } = req.body;
@@ -25,12 +26,17 @@ const register = async (req,res)=>{
         role = "ADMIN";
     }
 
-    user = new userModel({email,password,name,username});
+    let user = new userModel({email,password,name,username});
     await user.save();
     const accessToken = jwt.sign({userId : user._id} , process.env.JWT_SECRET , {
         expiresIn : '30day'
     })
-    res.cookie("token", accessToken, {maxAge : 900000 , httpOnly : true});
+    res.cookie("access-token", accessToken, {maxAge : 900000 , httpOnly : true});
+
+    const refreshToken = await refreshTokenModel.createToken(user);
+    res.cookie("refresh-token", accessToken, {maxAge : 900000 , httpOnly : true});
+
+
     req.flash("success", "Signed up was successfully");
     return res.redirect("/auth/register");
     // return successResponses(res,201,{
