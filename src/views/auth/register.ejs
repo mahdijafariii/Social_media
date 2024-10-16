@@ -115,6 +115,23 @@
 </div>
 
 </form>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    if ("<%= locals.messages.error %>") {
+        swal({
+            title: "<%= locals.messages.error %>",
+            icon: "error",
+            buttons: "Try Again"
+        });
+    } else if ("<%= locals.messages.success %>") {
+        swal({
+            title: "<%= locals.messages.success %>",
+            icon: "success",
+            buttons: "Huraaa 😍"
+        });
+    }
+</script>
 </body>
 
 </html>

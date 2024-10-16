@@ -3,9 +3,18 @@ const path = require("path");
 const app = express();
 const cors = require('cors');
 const authRoutes = require("../../Social_media/src/modules/auth/auth.router")
+const flash = require('express-flash');
+const session = require('express-session');
 app.use(express.urlencoded({extended : true , limit : "50mb"}));
 app.use(express.json({limit : "50mb"}));
 
+// Express Flash
+app.use(session({
+    secret : "Secret Key",
+    resave : false,
+    saveUninitialized : false
+}))
+app.use(flash());
 
 // static folders
 app.use(express.static(path.join(__dirname,"..","public")))

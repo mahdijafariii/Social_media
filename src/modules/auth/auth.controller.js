@@ -9,9 +9,13 @@ const register = async (req,res)=>{
         abortEarly : false
     });
 
-    const isExistUser = await userModel.findOne({username}).lean();
+    const isExistUser = await userModel.findOne({
+        $or: [{ username }, { email }],
+    });
     if(isExistUser){
-        return errorResponses(res,400,"This user already exist !!")
+        req.flash('error' ,"This user already exist !!" )
+        return res.redirect('/auth/register')
+        // return errorResponses(res,400,"This user already exist !!")
     }
 
     const isFirstUser = await userModel.countDocuments() === 0;
@@ -22,13 +26,12 @@ const register = async (req,res)=>{
 
     user = new userModel({email,password,name,username});
     await user.save();
-
-    return successResponses(res,201,{
-        message : "User added successfully !!",
-        user : { ...(user.toObject()), password : undefined}
-    })
-
-
+    req.flash("success", "Signed up was successfully");
+    return res.redirect("/auth/register");
+    // return successResponses(res,201,{
+    //     message : "User added successfully !!",
+    //     user : { ...(user.toObject()), password : undefined}
+    // })
 };
 
 const showRegisterView = async (req,res)=>{
