@@ -20,12 +20,12 @@ const register = async (req,res)=>{
         role = "ADMIN";
     }
 
-    const user = new userModel({email,password,name,username});
+    user = new userModel({email,password,name,username});
     await user.save();
 
     return successResponses(res,201,{
         message : "User added successfully !!",
-        user : {...(user), password : undefined}
+        user : { ...(user.toObject()), password : undefined}
     })
 
 
@@ -36,4 +36,4 @@ const showRegisterView = async (req,res)=>{
 }
 
 
-module.exports = {register};
+module.exports = {register , showRegisterView};

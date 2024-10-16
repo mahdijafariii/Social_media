@@ -24,7 +24,6 @@ const schema = mongoose.Schema({
     },
     profilePicture : {
         type : String,
-        required : true,
     },
     role : {
         type : String,

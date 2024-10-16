@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const yup = require('yup');
 
 exports.registerValidationSchema = yup.object({
     email: yup
