@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
     }
 })
 
-schema.static.createToken  = async (user) =>{
+schema.statics.createToken  = async (user) =>{
     const expireInDays = +process.env.REFRESH_TOKEN_EXPIRE;
     const refreshToken = uuidv4();
     const refreshTokenDocument = new model({
@@ -31,7 +31,7 @@ schema.static.createToken  = async (user) =>{
     return refreshToken;
 }
 
-schema.static.verifyToken  = async (token) =>{
+schema.statics.verifyToken  = async (token) =>{
     const refreshTokenDocument = await model.findOne({ token });
 
     if (refreshTokenDocument && refreshTokenDocument.expire >= Date.now()) {
