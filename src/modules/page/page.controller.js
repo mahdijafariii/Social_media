@@ -3,67 +3,118 @@ const followModel = require('../../models/Follow')
 const userModel = require('../../models/User');
 const getPage = async (req,res,next) =>{
     try {
-        const {pageId} = req.params;
         const user = req.user;
-        const hasAccess = await hasAccessToPage(user._id,pageId);
+        const { pageID } = req.params;
+        const hasAccess = await hasAccessToPage(user._id, pageID);
 
-        const followed = await followModel.findOne({follower : userId , following: pageId}).lean();
+        const followed = await FollowModel.findOne({
+            follower: user._id,
+            following: pageID,
+        });
 
-        if(!hasAccess){
-            req.flash('error', "Please follow to see content !!");
-            return res.render('pages/index',{
-                followed : Boolean(followed)
+        const page = await UserModel.findOne(
+            { _id: pageID },
+            "name username biography isVerified"
+        ).lean();
+
+        console.log(page);
+
+        if (!hasAccess) {
+            req.flash("error", "Follow page to show content");
+            return res.render("page/index", {
+                followed: Boolean(followed),
+                pageID,
+                followers: [],
+                followings: [],
+                hasAccess: false,
+                page,
             });
         }
-        return res.render('pages/index',{
-            followed : Boolean(followed)
+
+        let followers = await FollowModel.find({ following: pageID }).populate(
+            "follower",
+            "name username"
+        );
+
+        followers = followers.map((item) => item.follower);
+
+        let followings = await FollowModel.find({ follower: pageID }).populate(
+            "following",
+            "name username"
+        );
+
+        followings = followings.map((item) => item.following);
+
+        return res.render("page/index", {
+            followed: Boolean(followed),
+            pageID,
+            hasAccess: true,
+            followers,
+            followings,
+            page,
         });
-    }
-    catch (error){
-        next(error);
+    } catch (err) {
+        next(err);
     }
 }
 
 const follow = async (req,res,next)=>{
     try {
-        const pageId = req.params;
         const user = req.user;
+        const { pageID } = req.params;
 
-        const targetOwnPage = await userModel.findOne({_id : pageId}).lean();
-        if(!targetOwnPage){
-            req.flash('error', "page not found !!");
-            return res.redirect(`pages/${pageId}`);
+        const targetOwnPage = await UserModel.findOne({ _id: pageID });
+        if (!targetOwnPage) {
+            req.flash("error", "Page not found to follow !!");
+            return res.redirect(`/pages/${pageID}`);
         }
 
-        const hasFollowedBefore = await followModel.findOne({follower : user._id, following : pageId}).lean();
-        if(hasFollowedBefore){
-            req.flash('error', "page already followed !!");
-            return res.redirect(`pages/${pageId}`);
+        if (user._id.toString() === pageID) {
+            req.flash("error", "You cannot follow yourself");
+            return res.redirect(`/pages/${pageID}`);
         }
 
-        if(user._id.toString() === pageId){
-            req.flash('error', "you can not follow yourself !!");
-            return res.redirect(`pages/${pageId}`);
+        const existingFollow = await FollowModel.findOne({
+            follower: user._id,
+            following: pageID,
+        });
+
+        if (existingFollow) {
+            req.flash("error", "Page already followed !!");
+            return res.redirect(`/pages/${pageID}`);
         }
 
-        await followModel.create({
-            follower : user._id,
-            following : pageId,
-        })
-        req.flash('success', "followed successfully !!");
-        return res.redirect(`pages/${pageId}`);
-    }
-    catch (error) {
-        next(error)
+        await FollowModel.create({
+            follower: user._id,
+            following: pageID,
+        });
+
+        req.flash("success", "Page followed successfully :))");
+        return res.redirect(`/pages/${pageID}`);
+    } catch (err) {
+        next(err);
     }
 }
 
 const unfollow = async (req,res,next)=>{
     try {
+        const user = req.user;
+        const { pageID } = req.params;
 
-    }
-    catch (error) {
-        next(error);
+        const unFollowedPage = await FollowModel.findOneAndDelete({
+            follower: user._id,
+            following: pageID,
+        });
+
+        if (!unFollowedPage) {
+            req.flash("error", "You didn't follow this page !!");
+            return res.redirect(`/pages/${pageID}`);
+        }
+
+        req.flash("success", "Page unFollowed successfully :))");
+        return res.redirect(`/pages/${pageID}`);
+    } catch (err) {
+        next(err);
     }
 }
 
