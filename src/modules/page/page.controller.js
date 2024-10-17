@@ -2,6 +2,7 @@ const hasAccessToPage = require('../../utils/hasAccessToPage')
 const FollowModel = require('../../models/Follow')
 const UserModel = require('../../models/User');
 const PostModel = require('../../models/Post')
+const LikeModel = require('../../models/Like');
 const getPage = async (req,res,next) =>{
     try {
         const user = req.user;
@@ -50,6 +51,25 @@ const getPage = async (req,res,next) =>{
             .populate("user", "name username");
         const own = user._id.toString() === pageID;
 
+        const likes = await LikeModel.find({ user: user._id })
+            .populate("user", "_id")
+            .populate("post", "_id");
+
+        let postsWithLikes = [];
+
+        posts.forEach((post) => {
+            if (likes.length) {
+                likes.forEach((like) => {
+                    if (like.post._id.toString() === post._id.toString()) {
+                        postsWithLikes.push({ ...post, hasLike: true });
+                    } else {
+                        postsWithLikes.push({ ...post });
+                    }
+                });
+            } else {
+                postsWithLikes = [...posts];
+            }
+        });
         return res.render("page/index", {
             followed: Boolean(followed),
             pageID,
@@ -58,7 +78,7 @@ const getPage = async (req,res,next) =>{
             followings,
             page,
             own,
-            posts,
+            posts : postsWithLikes,
         });
     } catch (err) {
         next(err);
