@@ -2,6 +2,7 @@ const {createPostValidator} = require("./post.validator");
 const postModel = require('../../models/Post')
 const SaveModel = require('../../models/Save')
 const LikeModel = require('../../models/Like')
+const CommentModel = require('../../models/Comment')
 const hasAccessToPage = require('../../utils/hasAccessToPage');
 const {getUserInfo} = require("../../utils/helper");
 const showPostUploadView = async (req,res)=>{
@@ -221,4 +222,31 @@ const removePost = async (req,res,next)=>{
         next(err);
     }
 }
-module.exports = {showPostUploadView, createPost, like , dislike,save , unsave,showSavesView,removePost};
+const addComment = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { content, postID } = req.body;
+
+        // if (!user.isVerified) {
+        //   req.flash("error", "First Login for submit comment");
+        //   return res.redirect("back");
+        // }
+
+        const post = await PostModel.findOne({ _id: postID });
+        if (!post) {
+            // Codes
+        }
+
+        // ParentID
+
+        const comment = new CommentModel({ content, post: postID, user: user._id });
+        comment.save();
+
+        req.flash("success", "Comment submitted successfully :))");
+        return res.redirect("back");
+    } catch (err) {
+        next(err);
+    }
+};
+
+module.exports = {showPostUploadView, createPost, like , dislike,save , unsave,showSavesView,removePost ,addComment};
