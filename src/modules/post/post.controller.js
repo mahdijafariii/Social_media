@@ -147,7 +147,28 @@ const unsave = async (req, res, next) => {
 };
 const showSavesView = async (req, res, next) => {
     try {
-        // Codes
+        const user = req.user;
+        const saves = await SaveModel.find({ user: user._id })
+            .populate("post")
+            .lean();
+
+        const likes = await LikeModel.find({ user: user._id })
+            .populate("post")
+            .lean();
+
+        saves.forEach((item) => {
+            likes.forEach((like) => {
+                if (item.post._id.toString() === like.post._id.toString()) {
+                    item.post.hasLike = true;
+                }
+            });
+        });
+
+        console.log(saves);
+
+        return res.render("post/saves", {
+            posts: saves,
+        });
     } catch (err) {
         next(err);
     }
