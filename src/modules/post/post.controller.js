@@ -33,4 +33,51 @@ const createPost = async (req,res,next)=>{
         next(error)
     }
 }
+
+const like = async (req,res,next)=>{
+    try {
+        const user = req.user;
+        const { postID } = req.body;
+
+        const post = await PostModel.findOne({ _id: postID });
+        if (!post) {
+            //! Error Message
+        }
+
+        const hasAccess = await hasAccessToPage(user._id, post.user.toString());
+        if (!hasAccess) {
+            //! Error Message
+        }
+
+        const existingLike = await LikeModel.findOne({
+            user: user._id,
+            post: postID,
+        });
+
+        if (existingLike) {
+            return res.redirect("back"); // /page/:pageID ...
+        }
+
+        const like = new LikeModel({
+            post: postID,
+            user: user._id,
+        });
+
+        like.save();
+
+        return res.redirect("back");
+    } catch (err) {
+        next(err);
+    }
+}
+
+const dislike = async (req,res,next)=>{
+    try {
+
+    }
+    catch (error){
+        next(error)
+    }
+}
+
 module.exports = {showPostUploadView, createPost}

@@ -9,6 +9,7 @@ app.use(cookieParser());
 const authRoutes = require("../../Social_media/src/modules/auth/auth.router")
 const postRoutes = require('../../Social_media/src/modules/post/post.router');
 const pageRoutes = require('../../Social_media/src/modules/page/page.router');
+const userRoutes = require("../../Social_media/src/modules/user/user.router");
 
 
 const flash = require('express-flash');
@@ -50,6 +51,8 @@ app.get("/",(req ,res)=>{
 app.use("/auth", authRoutes);
 app.use('/post',postRoutes);
 app.use('/pages',pageRoutes);
+app.use("/users", userRoutes);
+
 app.use((req,res)=>{
     console.log("this path is not found :" , req.path);
     return res.status(500).json({message : "404! Path Not Found"})

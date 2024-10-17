@@ -7,4 +7,8 @@ const {multerStorage} = require('../../middleware/uploaderConfig')
 const upload = multerStorage('public/image/posts',/jpeg|jpg|png|webp|mp4|mkv/)
 
 router.route("/").get(auth,postController.showPostUploadView).post(auth, upload.single('media'),postController.createPost)
+
+router.route('/like').post(auth,postController.like);
+router.route('/dislike').post(auth,postController.dislike);
+
 module.exports = router;
