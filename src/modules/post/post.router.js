@@ -15,5 +15,6 @@ router.route("/save").post(auth, postController.save);
 router.route("/unsave").post(auth, postController.unsave);
 
 router.route("/saves").get(auth, postController.showSavesView);
+router.route("/:postID/remove").get(auth, postController.removePost);
 
 module.exports = router;

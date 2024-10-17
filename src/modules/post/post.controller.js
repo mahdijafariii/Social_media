@@ -3,6 +3,7 @@ const postModel = require('../../models/Post')
 const SaveModel = require('../../models/Save')
 const LikeModel = require('../../models/Like')
 const hasAccessToPage = require('../../utils/hasAccessToPage');
+const {getUserInfo} = require("../../utils/helper");
 const showPostUploadView = async (req,res)=>{
     return res.render('post/upload');
 }
@@ -149,8 +150,13 @@ const showSavesView = async (req, res, next) => {
     try {
         const user = req.user;
         const saves = await SaveModel.find({ user: user._id })
-            .populate("post")
-            .lean();
+            .populate({
+            path: "post",
+            populate: {
+                path: "user",
+                model: "User",
+            },
+        }).lean();
 
         const likes = await LikeModel.find({ user: user._id })
             .populate("post")
@@ -164,14 +170,55 @@ const showSavesView = async (req, res, next) => {
             });
         });
 
-        console.log(saves);
-
+        const userInfo = await getUserInfo(user._id);
         return res.render("post/saves", {
             posts: saves,
+            user : userInfo
         });
     } catch (err) {
         next(err);
     }
 }
 
-module.exports = {showPostUploadView, createPost, like , dislike,save , unsave,showSavesView};
+const removePost = async (req,res,next)=>{
+    try {
+        const user = req.user;
+        const { postID } = req.params;
+
+        const post = await PostModel.findOne({ _id: postID });
+
+        if (!post || post.user.toString() !== user._id.toString()) {
+            req.flash("error", "You cant remove this post !!");
+            return res.redirect("back");
+        }
+
+        const mediaPath = path.join(
+            __dirname,
+            "..",
+            "..",
+            "..",
+            "public",
+            "images",
+            "posts",
+            post.media.filename
+        );
+
+        fs.unlinkSync(mediaPath, (err) => {
+            if (err) {
+                next(err);
+            }
+        });
+
+        await LikeModel.deleteMany({ post: postID });
+        await SaveModel.deleteMany({ post: postID });
+        // await CommentModel.deleteMany({ post: postID });
+
+        await PostModel.findByIdAndDelete(postID);
+
+        req.flash("success", "Post removed successfully :))");
+        return res.redirect("back");
+    } catch (err) {
+        next(err);
+    }
+}
+module.exports = {showPostUploadView, createPost, like , dislike,save , unsave,showSavesView,removePost};
