@@ -11,4 +11,7 @@ router.route("/").get(auth,postController.showPostUploadView).post(auth, upload.
 router.route('/like').post(auth,postController.like);
 router.route('/dislike').post(auth,postController.dislike);
 
+router.route("/save").post(auth, postController.save);
+router.route("/unsave").post(auth, postController.unsave);
+
 module.exports = router;

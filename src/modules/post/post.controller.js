@@ -1,5 +1,8 @@
 const {createPostValidator} = require("./post.validator");
 const postModel = require('../../models/Post')
+const SaveModel = require('../../models/Save')
+const LikeModel = require('../../models/Like')
+const hasAccessToPage = require('../../utils/hasAccessToPage');
 const showPostUploadView = async (req,res)=>{
     return res.render('post/upload');
 }
@@ -91,4 +94,57 @@ const dislike = async (req,res,next)=>{
     }
 }
 
-module.exports = {showPostUploadView, createPost, like , dislike}
+const save = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { postID } = req.body;
+
+        const post = await PostModel.findOne({ _id: postID });
+        if (!post) {
+            //! Error Message
+        }
+
+        const hasAccess = await hasAccessToPage(user._id, post.user.toString());
+        if (!hasAccess) {
+            //! Error Message
+        }
+
+        const existingSave = await SaveModel.findOne({
+            user: user._id,
+            post: postID,
+        });
+
+        if (existingSave) {
+            return res.redirect("back"); // /page/:pageID ...
+        }
+
+        await SaveModel.create({ post: postID, user: user._id });
+
+        return res.redirect("back");
+    } catch (err) {
+        next(err);
+    }
+};
+
+const unsave = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { postID } = req.body;
+
+        const removedSave = await SaveModel.findOneAndDelete({
+            user: user._id,
+            post: postID,
+        });
+
+        if (!removedSave) {
+            //! Error Message
+        }
+
+        return res.redirect("back");
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+module.exports = {showPostUploadView, createPost, like , dislike,save , unsave}

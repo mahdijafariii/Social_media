@@ -16,7 +16,7 @@ const getPage = async (req,res,next) =>{
 
         const page = await UserModel.findOne(
             { _id: pageID },
-            "name username biography isVerified"
+            "name username biography isVerified profilePicture"
         ).lean();
 
         if (!hasAccess) {
@@ -46,12 +46,18 @@ const getPage = async (req,res,next) =>{
 
         followings = followings.map((item) => item.following);
 
-        const posts = await PostModel.find({ user: pageID })
-            .sort({ _id: -1 })
-            .populate("user", "name username");
         const own = user._id.toString() === pageID;
 
+        const posts = await PostModel.find({ user: pageID })
+            .sort({ _id: -1 })
+            .populate("user", "name username profilePicture")
+            .lean();
+
         const likes = await LikeModel.find({ user: user._id })
+            .populate("user", "_id")
+            .populate("post", "_id");
+
+        const saves = await SaveModel.find({ user: user._id })
             .populate("user", "_id")
             .populate("post", "_id");
 
@@ -70,6 +76,19 @@ const getPage = async (req,res,next) =>{
                 postsWithLikes = [...posts];
             }
         });
+
+        postsWithLikes.forEach((post) => {
+            if (saves.length) {
+                saves.forEach((save) => {
+                    if (save.post._id.toString() === post._id.toString()) {
+                        post.isSaved = true;
+                    }
+                });
+            }
+        });
+
+        console.log(postsWithLikes);
+
         return res.render("page/index", {
             followed: Boolean(followed),
             pageID,
@@ -78,7 +97,7 @@ const getPage = async (req,res,next) =>{
             followings,
             page,
             own,
-            posts : postsWithLikes,
+            posts: postsWithLikes,
         });
     } catch (err) {
         next(err);
