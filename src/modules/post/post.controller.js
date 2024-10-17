@@ -73,11 +73,22 @@ const like = async (req,res,next)=>{
 
 const dislike = async (req,res,next)=>{
     try {
+        const user = req.user;
+        const { postID } = req.body;
 
-    }
-    catch (error){
-        next(error)
+        const like = await LikeModel.findOne({ user: user._id, post: postID });
+
+        if (!like) {
+            return res.redirect("back");
+        }
+
+        // await LikeModel.findOneAndDelete({ user: user._id, post: postID });
+        await LikeModel.findOneAndDelete({ _id: like._id });
+
+        return res.redirect("back");
+    } catch (err) {
+        next(err);
     }
 }
 
-module.exports = {showPostUploadView, createPost}
+module.exports = {showPostUploadView, createPost, like , dislike}
