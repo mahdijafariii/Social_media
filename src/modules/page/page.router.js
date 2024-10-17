@@ -1,8 +1,9 @@
 const express = require('express');
 const pageController = require('../../modules/page/page.controller')
+const auth = require('../../middleware/auth')
 const router = express.Router();
 
-router.route('/:id').get(pageController.getPage)
+router.route('/:pageId').get(auth,pageController.getPage)
 
 
 module.exports = router;
