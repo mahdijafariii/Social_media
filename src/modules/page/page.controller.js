@@ -61,23 +61,17 @@ const getPage = async (req,res,next) =>{
             .populate("user", "_id")
             .populate("post", "_id");
 
-        let postsWithLikes = [];
-
         posts.forEach((post) => {
             if (likes.length) {
                 likes.forEach((like) => {
                     if (like.post._id.toString() === post._id.toString()) {
-                        postsWithLikes.push({ ...post, hasLike: true });
-                    } else {
-                        postsWithLikes.push({ ...post });
+                        post.hasLike = true;
                     }
                 });
-            } else {
-                postsWithLikes = [...posts];
             }
         });
 
-        postsWithLikes.forEach((post) => {
+        posts.forEach((post) => {
             if (saves.length) {
                 saves.forEach((save) => {
                     if (save.post._id.toString() === post._id.toString()) {
@@ -87,7 +81,7 @@ const getPage = async (req,res,next) =>{
             }
         });
 
-        console.log(postsWithLikes);
+        console.log(posts);
 
         return res.render("page/index", {
             followed: Boolean(followed),
@@ -97,7 +91,7 @@ const getPage = async (req,res,next) =>{
             followings,
             page,
             own,
-            posts: postsWithLikes,
+            posts,
         });
     } catch (err) {
         next(err);

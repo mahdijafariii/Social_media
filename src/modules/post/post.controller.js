@@ -145,6 +145,12 @@ const unsave = async (req, res, next) => {
         next(err);
     }
 };
+const showSavesView = async (req, res, next) => {
+    try {
+        // Codes
+    } catch (err) {
+        next(err);
+    }
+}
 
-
-module.exports = {showPostUploadView, createPost, like , dislike,save , unsave}
+module.exports = {showPostUploadView, createPost, like , dislike,save , unsave,showSavesView};

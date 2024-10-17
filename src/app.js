@@ -10,6 +10,7 @@ const authRoutes = require("../../Social_media/src/modules/auth/auth.router")
 const postRoutes = require('../../Social_media/src/modules/post/post.router');
 const pageRoutes = require('../../Social_media/src/modules/page/page.router');
 const userRoutes = require("../../Social_media/src/modules/user/user.router");
+const homeRoutes = require("../../Social_media/src/modules/home/home.router");
 
 
 const flash = require('express-flash');
@@ -52,6 +53,7 @@ app.use("/auth", authRoutes);
 app.use('/post',postRoutes);
 app.use('/pages',pageRoutes);
 app.use("/users", userRoutes);
+app.use("/", homeRoutes);
 
 app.use((req,res)=>{
     console.log("this path is not found :" , req.path);
